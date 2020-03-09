@@ -64,3 +64,19 @@ PASS: demo123
 OSUMS is open-sourced software licensed under the AGPL-3.0 license. Frameworks and libraries has it own licensed
 
 Enjoy :)
+
+# Docker
+
+https://github.com/docker-library/php/blob/master/7.2/stretch/apache/Dockerfile
+
+FROM php:7.2-apache
+
+# composer installation
+RUN cd /tmp && curl -sS https://getcomposer.org/installer | php
+RUN cd /tmp && mv composer.phar /usr/local/bin/composer
+RUN chmod +x /usr/local/bin/composer
+
+
+docker build --rm -t $(pwd | xargs basename) . &&\
+docker rm -f $(pwd | xargs basename)-app &&\
+docker run -d -p 80:80 -e "CUSTOM_DOCUMENT_ROOT=\/app\/public" --name $(pwd | xargs basename)-app $(pwd | xargs basename) && docker logs $(pwd | xargs basename)-app -f
